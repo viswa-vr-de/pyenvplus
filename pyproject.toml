@@ -3,8 +3,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pyenvplus"
-version = "0.0.1"
+name = "envplusai"
+version = "0.0.3"
 description = "A lightweight Python package for managing environment variables with advanced features."
 readme = "README.md"
 requires-python = ">=3.6"
@@ -12,6 +12,7 @@ license = {text = "MIT"}
 authors = [
   {name = "Viswavr", email = "viswavr54@gmail.com"},
 ]
+
 keywords = [
     "dotenv",
     "env loader",
@@ -133,6 +134,13 @@ dependencies = [
   "python-dotenv>=1.0.0",
 ]
 
+[project.urls]
+Homepage = "https://github.com/viswa-vr-de/pyenvplus"
+Repository = "https://github.com/viswa-vr-de/pyenvplus"
+Documentation = "https://github.com/viswa-vr-de/pyenvplus#readme"
+Issues = "https://github.com/viswa-vr-de/pyenvplus/issues"
+
+
 [project.optional-dependencies]
 dev = [
   "pytest",
@@ -142,4 +150,4 @@ dev = [
 testpaths = ["tests"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["pyenvplus"]
+packages = ["src/envplus"]

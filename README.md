@@ -1,28 +1,41 @@
 # envplus
 
-**envplus** is a lightweight Python package for managing environment variables with advanced features like type conversion, auto validation, hot reloading, and alias support.
+**envplus** is a lightweight, robust, and developer-friendly Python package designed to simplify environment variable management. It goes beyond basic `.env` loading by providing built-in type casting, automatic validation, hot reloading, and alias support—all in a single, easy-to-use interface.
 
-## Features
+## 🚀 Why envplus?
 
-- **Type Casting**: Easily cast environment variables to `str`, `int`, `float`, `bool`, `list`, and `json`.
-- **Auto Validation**: Detect missing keys and invalid types with clear error messages.
-- **Hot Reload**: Automatically reload values when `.env` file changes (lazy reload).
-- **Alias Support**: Fallback to alternative keys if the primary key is missing.
-- **Strict Mode**: Enforce presence of required variables.
-- **Default Values**: Safe handling of defaults.
-- **Debug Console**: Inspect loaded variables.
+Managing environment variables in Python often involves repetitive boilerplate code:
+- Manually casting strings to integers or booleans.
+- checking if a variable exists and raising custom errors.
+- Restarting the application every time a `.env` value changes during development.
+- Handling legacy variable names (aliases) when migrating configurations.
 
-## Installation
+**envplus** solves these problems by providing a centralized `Env` handler that takes care of the heavy lifting, allowing you to focus on building your application. It is designed to work seamlessly with Flask, Django, FastAPI, scripts, and microservices.
+
+## ✨ Features
+
+- **Type Casting**: Effortlessly cast environment variables to `str`, `int`, `float`, `bool`, `list`, and `json`.
+- **Auto Validation**: Automatically detect missing keys and invalid types with clear, readable error messages.
+- **Hot Reload**: (Development Friendly) Automatically reload values when the `.env` file changes without restarting your app.
+- **Alias Support**: Define multiple keys for a single value (e.g., `DATABASE_URL` or `DB_URL`) to support legacy configs.
+- **Strict Mode**: Enforce the presence of critical environment variables, raising errors immediately if they are missing.
+- **Default Values**: Safe and predictable handling of default values when variables are absent.
+- **Debug Console**: A built-in helper to inspect loaded variables (sanitized for security).
+- **System Priority**: Always prioritizes system environment variables over `.env` file values.
+
+## 📦 Installation
+
+Install `envplus` via pip:
 
 ```bash
 pip install envplus
 ```
 
-## Usage
+## 🛠 Usage
 
-### Basic Usage
+### 1. Basic Setup
 
-Create a `.env` file:
+Create a `.env` file in your project root:
 
 ```ini
 APP_ENV=development
@@ -30,70 +43,89 @@ DEBUG=true
 PORT=8080
 ALLOWED_HOSTS=localhost,127.0.0.1
 DB_CONFIG={"host": "localhost", "port": 5432}
+API_KEY=
 ```
 
-Use `envplus` in your code:
+Initialize `envplus` in your application:
 
 ```python
 from envplus import Env
 
+# Load environment variables
 env = Env()
-
-# Read values with type casting
-mode = env.str("APP_ENV")
-debug = env.bool("DEBUG")
-port = env.int("PORT")
-hosts = env.list("ALLOWED_HOSTS")
-db_config = env.json("DB_CONFIG")
-
-print(f"Mode: {mode}, Debug: {debug}, Port: {port}")
-print(f"Hosts: {hosts}")
-print(f"DB Config: {db_config}")
 ```
 
-### Strict Mode
+### 2. Reading Variables with Type Casting
 
-Enable strict mode to raise errors for missing variables without defaults.
+Stop doing `int(os.getenv("PORT", 8000))`. Use `envplus` methods instead:
 
 ```python
+# String (default behavior)
+app_env = env.str("APP_ENV", default="production")
+
+# Boolean (handles 'true', '1', 'yes', 'on', etc.)
+debug_mode = env.bool("DEBUG", default=False)
+
+# Integer
+port = env.int("PORT", default=3000)
+
+# Float
+threshold = env.float("THRESHOLD", default=0.5)
+
+# List (auto-splits by comma or custom delimiter)
+hosts = env.list("ALLOWED_HOSTS") 
+# Result: ['localhost', '127.0.0.1']
+
+# JSON (parses JSON strings into Python objects)
+db_config = env.json("DB_CONFIG")
+# Result: {'host': 'localhost', 'port': 5432}
+```
+
+### 3. Strict Mode & Validation
+
+Ensure your application doesn't start with missing configuration.
+
+```python
+# Enable strict mode
 env = Env(strict=True)
 
-# Raises MissingEnvError if API_KEY is missing
-api_key = env.str("API_KEY")
+# This will raise a MissingEnvError if "SECRET_KEY" is not found
+secret = env.str("SECRET_KEY")
 
-# Safe with default
-api_key = env.str("API_KEY", default="secret")
+# This is still safe because a default is provided
+optional_val = env.str("OPTIONAL_KEY", default="fallback")
 ```
 
-### Aliases
+### 4. Alias Support
 
-Support legacy or alternative environment variable names.
+Great for migrations or supporting multiple naming conventions.
 
 ```python
-# Tries DATABASE_URL first, then DB_URL
-db_url = env.alias(["DATABASE_URL", "DB_URL"])
+# Tries 'DATABASE_URL' first. If missing, tries 'DB_CONNECTION_STRING'.
+db_url = env.alias(["DATABASE_URL", "DB_CONNECTION_STRING"])
 ```
 
-### Debugging
+### 5. Hot Reloading
 
-Print all loaded environment variables (masked values not implemented yet, be careful in production!).
+Perfect for local development. If you change your `.env` file while the app is running, `envplus` will pick up the new value on the next access.
+
+```python
+# ... modify .env file ...
+print(env.str("MY_VAR")) # Returns the updated value!
+```
+
+### 6. Debugging
+
+Print a summary of all loaded environment variables to the console.
 
 ```python
 env.debug()
 ```
 
-## Development Setup
+## 🤝 Contributing
 
-1. Clone the repository.
-2. Install dependencies:
-   ```bash
-   pip install -e .[dev]
-   ```
-3. Run tests:
-   ```bash
-   pytest
-   ```
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## License
+## 📄 License
 
-MIT
+This project is licensed under the MIT License.
