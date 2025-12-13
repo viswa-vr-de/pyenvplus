@@ -1,3 +1,7 @@
+[![PyPI version](https://img.shields.io/pypi/v/envplusai.svg)](https://pypi.org/project/envplusai/)
+![Python Versions](https://img.shields.io/pypi/pyversions/envplusai)
+![License](https://img.shields.io/pypi/l/envplusai)
+![Downloads](https://img.shields.io/pypi/dm/envplusai)
 # envplus
 
 **envplus** is a lightweight, robust, and developer-friendly Python package designed to simplify environment variable management. It goes beyond basic `.env` loading by providing built-in type casting, automatic validation, hot reloading, alias support, and variable expansion—all in a single, easy-to-use interface.
